@@ -4,6 +4,8 @@
 
 A Next.js application connecting travelers with locals for authentic experiences around the world.
 
+*This is a project for MSE 343.*
+
 ## Tech Stack
 
 - **Framework**: Next.js 14 (App Router)
