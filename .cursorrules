@@ -1,0 +1,79 @@
+# Locaylo Project Rules
+
+## Styling Guidelines
+
+### 1. Always Use globals.css for Styling
+- **ALL styling values must be defined in `app/globals.css` first** before being used in components
+- Use CSS variables from globals.css for colors, shadows, border radius, and other reusable values
+- Never hardcode common styling values directly in component files
+- If a new styling pattern is needed, add it to globals.css first, then reference it in components
+
+### 2. Standardized Design System (from globals.css)
+When styling components, always use these standardized values:
+
+#### Colors (use CSS variables):
+- `--primary-blue`: rgba(96, 165, 250, 0.3)
+- `--primary-blue-hover`: rgba(96, 165, 250, 0.4)
+- `--primary-blue-border`: rgba(96, 165, 250, 0.2)
+- `--primary-blue-text`: rgb(96, 165, 250)
+- `--background`: rgb(249, 250, 251)
+- `--surface-white`: rgb(255, 255, 255)
+- `--text-primary`: rgb(0, 0, 0)
+- `--text-secondary`: rgb(17, 24, 39)
+- `--text-muted`: rgb(107, 114, 128)
+- `--text-subtle`: rgb(156, 163, 175)
+- `--text-disabled`: rgb(209, 213, 219)
+- `--border-light`: rgb(243, 244, 246)
+- `--border-default`: rgb(229, 231, 235)
+- `--border-medium`: rgb(209, 213, 219)
+- `--border-dark`: rgb(156, 163, 175)
+
+#### Button Styles:
+- **Border Radius**: Always use `rounded-3xl` (24px) for all buttons except icon buttons
+- **Shadow**: Use `shadow-[0_4px_20px_rgba(96,165,250,0.3)]` for default state
+- **Hover Shadow**: Use `hover:shadow-[0_4px_25px_rgba(96,165,250,0.4)]` for hover state
+- **Active Scale**: Use `active:scale-[0.98]` for button press effect
+- **Transition**: Use `transition-all` for smooth animations
+- **Icon Buttons**: Can remain `rounded-full` (circular)
+
+#### Primary Action Buttons:
+```tsx
+className="... rounded-3xl shadow-[0_4px_20px_rgba(96,165,250,0.3)] hover:shadow-[0_4px_25px_rgba(96,165,250,0.4)] active:scale-[0.98] transition-all"
+style={{ backgroundColor: 'rgba(96,165,250,0.3)' }}
+```
+
+### 3. Image-to-Design Implementation
+When the user says **"Make a page look exactly like this image"**:
+- Analyze the image carefully for layout, spacing, and visual hierarchy
+- **Use ONLY the styling values from globals.css** to recreate the design
+- Match colors to the closest CSS variable from globals.css
+- Use the standardized button styles (rounded-3xl, standardized shadows)
+- Maintain consistency with the existing design system
+- If the image shows a style that doesn't exist in globals.css, add it to globals.css first
+- Prioritize design system consistency over pixel-perfect recreation
+
+### 4. Adding New Styles
+If a new styling pattern is needed:
+1. First, check if an existing CSS variable or utility class can be used
+2. If not, add the new style to globals.css as a CSS variable or utility class
+3. Document it in this .cursorrules file under the appropriate section
+4. Then use it in components
+
+### 5. Consistency is Key
+- All buttons of the same type should look identical
+- All shadows should use the standardized values
+- All border radius should match the design system
+- All colors should come from the CSS variables
+
+## Technology Stack
+- Next.js 14+ with App Router
+- TypeScript
+- Tailwind CSS
+- Lucide React (for icons)
+
+## Code Quality
+- Always use TypeScript with proper typing
+- Use 'use client' directive for client components
+- Prefer functional components with hooks
+- Keep components clean and readable
+
