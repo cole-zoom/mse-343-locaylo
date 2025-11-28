@@ -32,6 +32,11 @@ export const TravelerActivityProvider: React.FC<{ children: React.ReactNode }> =
           
           // Merge stored data with original data to ensure all required fields are valid
           const validatedActivities = parsed.map((storedActivity: Partial<TravelerActivity>) => {
+            // Skip if no id present
+            if (!storedActivity.id) {
+              return null;
+            }
+            
             const originalActivity = originalActivityMap.get(storedActivity.id);
             
             // If activity doesn't exist in original data, skip it (could be old/removed activity)
