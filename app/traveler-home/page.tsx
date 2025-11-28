@@ -70,6 +70,13 @@ export default function TravelerHomePage() {
             setSelectedDurations([]);
           }
         }
+
+        // Load selected location
+        const storedLocation = sessionStorage.getItem('selectedLocation');
+        if (storedLocation) {
+          setSelectedLocation(storedLocation);
+          setLocationSearch(storedLocation);
+        }
       }
     };
 
@@ -125,13 +132,34 @@ export default function TravelerHomePage() {
     return matchesLocation && matchesSearch && matchesLanguage && matchesDuration;
   });
 
+  // Randomize order when no location or filters are selected
+  const displayActivities = React.useMemo(() => {
+    const shouldRandomize = !selectedLocation && 
+                           selectedLanguages.length === 0 && 
+                           selectedDurations.length === 0;
+    
+    if (shouldRandomize) {
+      // Fisher-Yates shuffle algorithm
+      const shuffled = [...filteredActivities];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    }
+    
+    return filteredActivities;
+  }, [filteredActivities, selectedLocation, selectedLanguages, selectedDurations]);
+
   const handleLocationSelect = (locationName: string) => {
     if (locationName === 'All') {
       setSelectedLocation('');
       setLocationSearch('');
+      sessionStorage.setItem('selectedLocation', '');
     } else {
       setSelectedLocation(locationName);
       setLocationSearch(locationName);
+      sessionStorage.setItem('selectedLocation', locationName);
     }
     setShowLocationDropdown(false);
   };
@@ -346,12 +374,12 @@ export default function TravelerHomePage() {
 
         {viewMode === 'list' ? (
           <div className="space-y-4">
-            {filteredActivities.length === 0 ? (
+            {displayActivities.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-gray-500 text-lg">No activities found</p>
               </div>
             ) : (
-              filteredActivities.map((activity) => (
+              displayActivities.map((activity) => (
                 <div 
                   key={activity.id} 
                   className="p-5 rounded-3xl flex items-start gap-4 group shadow-[0_4px_20px_rgba(96,165,250,0.3)] hover:shadow-[0_4px_25px_rgba(96,165,250,0.4)] transition-all"
@@ -391,7 +419,7 @@ export default function TravelerHomePage() {
         ) : (
           <MapView 
             selectedLocation={selectedLocation} 
-            activities={filteredActivities}
+            activities={displayActivities}
             onToggleFavorite={handleToggleFavorite}
             onInterested={(activityId, timeSlot) => {
               handleInterested(activityId, timeSlot);
@@ -400,6 +428,7 @@ export default function TravelerHomePage() {
             onLocationSelect={(locationName) => {
               setSelectedLocation(locationName);
               setLocationSearch(locationName);
+              sessionStorage.setItem('selectedLocation', locationName);
             }}
           />
         )}
