@@ -91,6 +91,37 @@ export function MapView({ selectedLocation, activities, onToggleFavorite, onInte
     setSelectedActivity(null);
   }, [selectedLocation]);
 
+  // Use native event listeners for wheel and touch events to allow preventDefault
+  // React's synthetic events are passive by default in modern browsers
+  useEffect(() => {
+    const container = mapContainerRef.current;
+    if (!container) return;
+
+    const handleNativeWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      const delta = e.deltaY * -0.001;
+      setScale(prevScale => {
+        const newScale = Math.min(Math.max(1, prevScale + delta), 5);
+        return newScale;
+      });
+    };
+
+    const handleNativeTouchMove = (e: TouchEvent) => {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+      }
+    };
+
+    // Add event listeners with { passive: false } to allow preventDefault
+    container.addEventListener('wheel', handleNativeWheel, { passive: false });
+    container.addEventListener('touchmove', handleNativeTouchMove, { passive: false });
+
+    return () => {
+      container.removeEventListener('wheel', handleNativeWheel);
+      container.removeEventListener('touchmove', handleNativeTouchMove);
+    };
+  }, []);
+
   // Helper function to calculate pan limits based on current scale
   const calculatePanLimits = (currentScale: number) => {
     if (!mapContainerRef.current) return { maxPanX: 0, maxPanY: 0 };
@@ -123,20 +154,14 @@ export function MapView({ selectedLocation, activities, onToggleFavorite, onInte
     return { maxPanX, maxPanY };
   };
 
-  // Handle wheel zoom
-  const handleWheel = (e: React.WheelEvent) => {
-    e.preventDefault();
-    const delta = e.deltaY * -0.001;
-    const newScale = Math.min(Math.max(1, scale + delta), 5);
-    setScale(newScale);
-    
-    // Adjust position to stay within bounds after zoom
-    const { maxPanX, maxPanY } = calculatePanLimits(newScale);
+  // Adjust position when scale changes to stay within bounds
+  useEffect(() => {
+    const { maxPanX, maxPanY } = calculatePanLimits(scale);
     setPosition(prev => ({
       x: Math.min(Math.max(prev.x, -maxPanX), maxPanX),
       y: Math.min(Math.max(prev.y, -maxPanY), maxPanY)
     }));
-  };
+  }, [scale]);
 
   // Handle mouse/touch drag start
   const handleDragStart = (clientX: number, clientY: number) => {
@@ -187,19 +212,12 @@ export function MapView({ selectedLocation, activities, onToggleFavorite, onInte
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (e.touches.length === 2) {
-      e.preventDefault();
+      // preventDefault is handled by native event listener
       const newDistance = getTouchDistance(e.touches);
       if (touchDistance > 0) {
         const scaleChange = newDistance / touchDistance;
         const newScale = Math.min(Math.max(1, scale * scaleChange), 5);
         setScale(newScale);
-        
-        // Adjust position to stay within bounds after zoom
-        const { maxPanX, maxPanY } = calculatePanLimits(newScale);
-        setPosition(prev => ({
-          x: Math.min(Math.max(prev.x, -maxPanX), maxPanX),
-          y: Math.min(Math.max(prev.y, -maxPanY), maxPanY)
-        }));
       }
       setTouchDistance(newDistance);
     } else if (e.touches.length === 1) {
@@ -248,7 +266,6 @@ export function MapView({ selectedLocation, activities, onToggleFavorite, onInte
       <div 
         ref={mapContainerRef}
         className="w-full h-[400px] rounded-3xl border-2 border-white shadow-lg overflow-hidden relative"
-        onWheel={handleWheel}
         onMouseDown={(e) => handleDragStart(e.clientX, e.clientY)}
         onMouseMove={(e) => handleDragMove(e.clientX, e.clientY)}
         onMouseUp={handleDragEnd}
