@@ -62,7 +62,7 @@ export const LOCATIONS: Location[] = [
 export const TRAVELER_ACTIVITIES: TravelerActivity[] = [
   // Bangkok, Thailand
   { id: '1', name: 'Flower Market', location: 'Bangkok, Thailand', availableTimeSlots: ['09:00-13:30', '16:00-19:00'], isFavorite: false, isAdded: false, emoji: '🌸', language: 'Thai', duration: [4.5, 3] },
-  { id: '2', name: 'Street Food Tour', location: 'Bangkok, Thailand', availableTimeSlots: ['18:00-21:00', '19:00-22:00'], isFavorite: false, isAdded: false, emoji: '🍜', language: 'English', duration: [3, 3] },
+  { id: '2', name: 'Street Food Tour ✅', location: 'Bangkok, Thailand', availableTimeSlots: ['18:00-21:00', '19:00-22:00'], isFavorite: false, isAdded: false, emoji: '🍜', language: 'English', duration: [3, 3] },
   { id: '3', name: 'Temple Visit', location: 'Bangkok, Thailand', availableTimeSlots: ['08:00-11:00', '14:00-17:00'], isFavorite: false, isAdded: false, emoji: '🛕', language: 'Thai', duration: [3, 3] },
   { id: '4', name: 'Thai Cooking Class', location: 'Bangkok, Thailand', availableTimeSlots: ['10:00-13:00', '15:00-18:00'], isFavorite: false, isAdded: false, emoji: '👨‍🍳', language: 'English', duration: [3, 3] },
   { id: '5', name: 'Floating Market', location: 'Bangkok, Thailand', availableTimeSlots: ['06:00-10:00', '07:00-11:00'], isFavorite: false, isAdded: false, emoji: '🚣', language: 'Thai', duration: [4, 4] },

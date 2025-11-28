@@ -33,13 +33,41 @@ export default function TravelerHomePage() {
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [selectedDurations, setSelectedDurations] = useState<string[]>([]);
   const [showSuccessNotification, setShowSuccessNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState('Activity added');
   const [mounted, setMounted] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Store randomized order for unfiltered view (generated once per session)
+  const [randomOrder, setRandomOrder] = useState<string[]>([]);
 
   // Track when component has mounted (client-side) to avoid hydration mismatch
   useEffect(() => {
     setMounted(true);
-  }, []);
+    
+    // Generate random order only once per session (client-side only)
+    // Use sessionStorage to persist across page navigations within the session
+    const storedOrder = sessionStorage.getItem('activityRandomOrder');
+    if (storedOrder) {
+      try {
+        const parsed = JSON.parse(storedOrder);
+        if (Array.isArray(parsed)) {
+          setRandomOrder(parsed);
+          return;
+        }
+      } catch (e) {
+        // Fall through to generate new order
+      }
+    }
+    
+    // Generate new random order using Fisher-Yates shuffle
+    const activityIds = activities.map(a => a.id);
+    for (let i = activityIds.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [activityIds[i], activityIds[j]] = [activityIds[j], activityIds[i]];
+    }
+    setRandomOrder(activityIds);
+    sessionStorage.setItem('activityRandomOrder', JSON.stringify(activityIds));
+  }, [activities]);
 
   useEffect(() => {
     // Close dropdown when clicking outside
@@ -133,6 +161,9 @@ export default function TravelerHomePage() {
     );
   };
 
+  // Check if any filters are active
+  const hasActiveFilters = selectedLocation || searchQuery || selectedLanguages.length > 0 || selectedDurations.length > 0;
+
   const filteredActivities = React.useMemo(() => {
     return activities.filter(activity => {
       const matchesLocation = !selectedLocation || activity.location === selectedLocation;
@@ -145,8 +176,24 @@ export default function TravelerHomePage() {
     });
   }, [activities, selectedLocation, searchQuery, selectedLanguages, selectedDurations]);
 
-  // Use filtered activities directly (removed randomization to prevent hydration mismatch)
-  const displayActivities = filteredActivities;
+  // Display activities: use random order only when no filters are active AND mounted (client-side)
+  const displayActivities = React.useMemo(() => {
+    // If filters are active, show filtered results in original order
+    if (hasActiveFilters) {
+      return filteredActivities;
+    }
+    
+    // If not mounted yet (SSR), return activities in original order to avoid hydration mismatch
+    if (!mounted || randomOrder.length === 0) {
+      return activities;
+    }
+    
+    // No filters active + mounted: use the random order
+    const activityMap = new Map(activities.map(a => [a.id, a]));
+    return randomOrder
+      .map(id => activityMap.get(id))
+      .filter((a): a is TravelerActivity => a !== undefined);
+  }, [hasActiveFilters, filteredActivities, mounted, randomOrder, activities]);
 
   const handleLocationSelect = (locationName: string) => {
     if (locationName === 'All') {
@@ -162,6 +209,12 @@ export default function TravelerHomePage() {
   };
 
   const handleToggleFavorite = (activityId: string) => {
+    const activity = activities.find(a => a.id === activityId);
+    // Show notification when adding to favorites (not removing)
+    if (activity && !activity.isFavorite) {
+      setNotificationMessage('Added to favourites');
+      setShowSuccessNotification(true);
+    }
     toggleFavorite(activityId);
   };
 
@@ -437,6 +490,7 @@ export default function TravelerHomePage() {
             onToggleFavorite={handleToggleFavorite}
             onInterested={(activityId, timeSlot) => {
               handleInterested(activityId, timeSlot);
+              setNotificationMessage('Activity added');
               setShowSuccessNotification(true);
             }}
             onLocationSelect={(locationName) => {
@@ -455,7 +509,10 @@ export default function TravelerHomePage() {
           onClose={() => setSelectedActivity(null)}
           onInterested={handleInterested}
           onToggleFavorite={handleToggleFavorite}
-          onShowNotification={() => setShowSuccessNotification(true)}
+          onShowNotification={() => {
+            setNotificationMessage('Added to favourites');
+            setShowSuccessNotification(true);
+          }}
         />
       )}
 
@@ -470,7 +527,7 @@ export default function TravelerHomePage() {
 
       {showSuccessNotification && (
         <Notification
-          message="Activity added"
+          message={notificationMessage}
           type="success"
           onClose={() => setShowSuccessNotification(false)}
         />

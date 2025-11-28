@@ -36,13 +36,12 @@ const mockChatData: Record<string, ChatData> = {
   },
   '2': {
     id: '2',
-    name: 'Chen Wei',
+    name: 'Chen Wei ✅',
     avatar: '👨🏻',
-    activity: 'Street Food Tour - 11/29/25, 19:00 - 21:00',
+    activity: 'Street Food Tour ✅- 11/29/25, 19:00 - 21:00',
     date: '11/29/25, 19:00 - 21:00',
     initialMessages: [
-      { id: 'm1', text: 'Excited to show you the best street food!', sender: 'other', timestamp: new Date('2025-11-28T10:00:00') },
-      { id: 'm2', text: 'Can\'t wait! I love trying local cuisine', sender: 'user', timestamp: new Date('2025-11-28T10:05:00') },
+      
     ],
   },
   '3': {

@@ -25,9 +25,9 @@ const mockChats: ChatPreview[] = [
   },
   {
     id: '2',
-    name: 'Chen Wei',
+    name: 'Chen Wei ✅',
     avatar: '👨🏻',
-    activity: 'Street Food Tour',
+    activity: 'Street Food Tour ✅',
     date: '11/29/25, 19:00 - 21:00',
     status: 'active',
   },

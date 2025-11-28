@@ -33,6 +33,10 @@ export function ActivityDetailsModal({
   };
 
   const handleToggleFavorite = () => {
+    // Show notification when adding to favorites (not removing)
+    if (!isFavorite && onShowNotification) {
+      onShowNotification();
+    }
     setIsFavorite(!isFavorite);
     onToggleFavorite(activity.id);
   };

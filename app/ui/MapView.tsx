@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Heart, MapPin, ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
 import { TravelerActivity } from '@/lib/types';
 import { LOCATIONS } from '@/lib/data';
+import { Notification } from './Notification';
 
 interface MapViewProps {
   selectedLocation: string;
@@ -16,6 +17,8 @@ interface MapViewProps {
 
 export function MapView({ selectedLocation, activities, onToggleFavorite, onInterested, onLocationSelect }: MapViewProps) {
   const [selectedActivity, setSelectedActivity] = useState<TravelerActivity | null>(null);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string | null>(null);
+  const [showNotification, setShowNotification] = useState(false);
   
   // Zoom and pan state
   const [scale, setScale] = useState(1);
@@ -89,6 +92,7 @@ export function MapView({ selectedLocation, activities, onToggleFavorite, onInte
     setScale(1);
     setPosition({ x: 0, y: 0 });
     setSelectedActivity(null);
+    setSelectedTimeSlot(null);
   }, [selectedLocation]);
 
   // Use native event listeners for wheel and touch events to allow preventDefault
@@ -411,6 +415,10 @@ export function MapView({ selectedLocation, activities, onToggleFavorite, onInte
             <button
               onClick={(e) => {
                 e.stopPropagation();
+                // Show notification if adding to favorites (not removing)
+                if (!selectedActivity.isFavorite) {
+                  setShowNotification(true);
+                }
                 onToggleFavorite(selectedActivity.id);
               }}
               className="hover:scale-110 transition-transform"
@@ -428,12 +436,14 @@ export function MapView({ selectedLocation, activities, onToggleFavorite, onInte
               {selectedActivity.availableTimeSlots.map((slot, idx) => {
                 const [start, end] = slot.split('-');
                 const displaySlot = `${start} - ${end}`;
+                const isSelected = selectedTimeSlot === slot;
                 return (
                   <button
                     key={idx}
+                    onClick={() => setSelectedTimeSlot(slot)}
                     className="px-4 py-2 rounded-3xl text-sm font-medium transition-all hover:opacity-80"
                     style={{
-                      backgroundColor: 'var(--surface-white)',
+                      backgroundColor: isSelected ? 'var(--primary-blue)' : 'var(--surface-white)',
                       border: '2px solid var(--primary-blue-text)',
                       color: 'var(--text-primary)'
                     }}
@@ -458,6 +468,15 @@ export function MapView({ selectedLocation, activities, onToggleFavorite, onInte
             I&apos;m interested
           </button>
         </div>
+      )}
+
+      {/* Success notification */}
+      {showNotification && (
+        <Notification
+          message="Added to favourites"
+          type="success"
+          onClose={() => setShowNotification(false)}
+        />
       )}
     </div>
   );

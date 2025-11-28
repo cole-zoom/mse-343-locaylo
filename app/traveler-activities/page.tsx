@@ -6,6 +6,7 @@ import { Heart, Trash2, ChevronDown } from 'lucide-react';
 import { TravelerNav } from '../ui/TravelerNav';
 import { ActivityDetailsModal } from '../ui/ActivityDetailsModal';
 import { DatePickerModal } from '../ui/DatePickerModal';
+import { Notification } from '../ui/Notification';
 import { TravelerActivity } from '@/lib/types';
 import { DATES, currentDate as initialCurrentDate } from '@/lib/data';
 import { useTravelerActivities } from '@/lib/TravelerActivityContext';
@@ -17,12 +18,18 @@ export default function TravelerActivitiesPage() {
   const [currentDate, setCurrentDate] = useState<string>(initialCurrentDate);
   const [selectedActivity, setSelectedActivity] = useState<TravelerActivity | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showSuccessNotification, setShowSuccessNotification] = useState(false);
 
   // Filter activities based on tab
   const favouriteActivities = activities.filter(activity => activity.isFavorite);
   const scheduledActivities = activities.filter(activity => activity.isAdded && activity.date === currentDate);
 
   const handleToggleFavorite = (activityId: string) => {
+    const activity = activities.find(a => a.id === activityId);
+    // Show notification when adding to favorites (not removing)
+    if (activity && !activity.isFavorite) {
+      setShowSuccessNotification(true);
+    }
     toggleFavorite(activityId);
   };
 
@@ -316,6 +323,7 @@ export default function TravelerActivitiesPage() {
           onClose={() => setSelectedActivity(null)}
           onInterested={handleInterested}
           onToggleFavorite={handleToggleFavorite}
+          onShowNotification={() => setShowSuccessNotification(true)}
         />
       )}
 
@@ -326,6 +334,15 @@ export default function TravelerActivitiesPage() {
           currentDateId={currentDate}
           onSelectDate={handleDateSelect}
           onClose={() => setShowDatePicker(false)}
+        />
+      )}
+
+      {/* Success Notification */}
+      {showSuccessNotification && (
+        <Notification
+          message="Added to favourites"
+          type="success"
+          onClose={() => setShowSuccessNotification(false)}
         />
       )}
     </div>
