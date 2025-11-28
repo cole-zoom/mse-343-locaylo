@@ -33,7 +33,13 @@ export default function TravelerHomePage() {
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [selectedDurations, setSelectedDurations] = useState<string[]>([]);
   const [showSuccessNotification, setShowSuccessNotification] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Track when component has mounted (client-side) to avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     // Close dropdown when clicking outside
@@ -139,25 +145,8 @@ export default function TravelerHomePage() {
     });
   }, [activities, selectedLocation, searchQuery, selectedLanguages, selectedDurations]);
 
-  // Randomize order when no location or filters are selected
-  const displayActivities = React.useMemo(() => {
-    const shouldRandomize = !selectedLocation && 
-                           selectedLanguages.length === 0 && 
-                           selectedDurations.length === 0 &&
-                           !searchQuery;
-    
-    if (shouldRandomize) {
-      // Fisher-Yates shuffle algorithm
-      const shuffled = [...filteredActivities];
-      for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-      }
-      return shuffled;
-    }
-    
-    return filteredActivities;
-  }, [filteredActivities, selectedLocation, selectedLanguages, selectedDurations, searchQuery]);
+  // Use filtered activities directly (removed randomization to prevent hydration mismatch)
+  const displayActivities = filteredActivities;
 
   const handleLocationSelect = (locationName: string) => {
     if (locationName === 'All') {
@@ -328,8 +317,8 @@ export default function TravelerHomePage() {
 
       {/* Scrollable Content */}
       <div className="p-6" style={{ backgroundColor: 'var(--background)' }}>
-        {/* Filter Tags Section */}
-        {(selectedLanguages.length > 0 || selectedDurations.length > 0) && (
+        {/* Filter Tags Section - only show after mounted to avoid hydration mismatch */}
+        {mounted && (selectedLanguages.length > 0 || selectedDurations.length > 0) && (
           <div className="mb-6 space-y-4">
             {/* Language Filter Tags */}
             {selectedLanguages.length > 0 && (
@@ -365,8 +354,8 @@ export default function TravelerHomePage() {
           </div>
         )}
 
-        {/* Only show heading when no filters are applied */}
-        {!selectedLocation && selectedLanguages.length === 0 && selectedDurations.length === 0 && (
+        {/* Only show heading when no filters are applied - check mounted to avoid hydration mismatch */}
+        {(!mounted || (!selectedLocation && selectedLanguages.length === 0 && selectedDurations.length === 0)) && (
           <h3 className="font-bold text-2xl mb-4 text-black">Trending Activities Worldwide</h3>
         )}
         
@@ -380,7 +369,24 @@ export default function TravelerHomePage() {
           </button>
         </div>
 
-        {viewMode === 'list' ? (
+        {!mounted ? (
+          /* Loading state - shown during SSR and initial hydration */
+          <div className="space-y-4">
+            {[1, 2, 3].map((i) => (
+              <div 
+                key={i}
+                className="p-5 rounded-3xl flex items-start gap-4 animate-pulse"
+                style={{ backgroundColor: 'var(--background)', border: '1px solid rgba(96,165,250,0.2)' }}
+              >
+                <div className="w-12 h-12 rounded-full bg-gray-200" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-5 bg-gray-200 rounded w-3/4" />
+                  <div className="h-4 bg-gray-200 rounded w-1/2" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : viewMode === 'list' ? (
           <div className="space-y-4">
             {displayActivities.length === 0 ? (
               <div className="text-center py-12">

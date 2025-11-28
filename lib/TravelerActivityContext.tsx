@@ -16,6 +16,7 @@ const TravelerActivityContext = createContext<TravelerActivityContextType | unde
 
 export const TravelerActivityProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [activities, setActivities] = useState<TravelerActivity[]>(TRAVELER_ACTIVITIES);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -38,12 +39,15 @@ export const TravelerActivityProvider: React.FC<{ children: React.ReactNode }> =
         console.error('Failed to parse traveler activities from localStorage', e);
       }
     }
+    setIsLoaded(true);
   }, []);
 
-  // Save to localStorage whenever activities change
+  // Save to localStorage whenever activities change (only after initial load)
   useEffect(() => {
-    localStorage.setItem('locaylo_traveler_activities', JSON.stringify(activities));
-  }, [activities]);
+    if (isLoaded) {
+      localStorage.setItem('locaylo_traveler_activities', JSON.stringify(activities));
+    }
+  }, [activities, isLoaded]);
 
   const toggleFavorite = (activityId: string) => {
     setActivities(prev => prev.map(activity => 
