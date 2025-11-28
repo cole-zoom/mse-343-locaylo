@@ -12,6 +12,9 @@ import {
 import { TravelerNav } from '../ui/TravelerNav';
 import { ActivityDetailsModal } from '../ui/ActivityDetailsModal';
 import { DatePickerModal } from '../ui/DatePickerModal';
+import { FilterTag } from '../ui/FilterTag';
+import { Notification } from '../ui/Notification';
+import { MapView } from '../ui/MapView';
 import { TravelerActivity } from '@/lib/types';
 import { LOCATIONS, DATES, currentDate as initialCurrentDate } from '@/lib/data';
 import { useTravelerActivities } from '@/lib/TravelerActivityContext';
@@ -27,6 +30,9 @@ export default function TravelerHomePage() {
   const [selectedActivity, setSelectedActivity] = useState<TravelerActivity | null>(null);
   const [currentDate, setCurrentDate] = useState<string>(initialCurrentDate);
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
+  const [selectedDurations, setSelectedDurations] = useState<string[]>([]);
+  const [showSuccessNotification, setShowSuccessNotification] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -41,20 +47,92 @@ export default function TravelerHomePage() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const filteredLocations = LOCATIONS.filter(location =>
+  useEffect(() => {
+    // Load selected filters from sessionStorage whenever we return to this page
+    const loadFilters = () => {
+      if (typeof window !== 'undefined') {
+        const storedLanguages = sessionStorage.getItem('selectedLanguages');
+        if (storedLanguages) {
+          try {
+            const parsed = JSON.parse(storedLanguages);
+            setSelectedLanguages(Array.isArray(parsed) ? parsed : []);
+          } catch (e) {
+            setSelectedLanguages([]);
+          }
+        }
+
+        const storedDurations = sessionStorage.getItem('selectedDurations');
+        if (storedDurations) {
+          try {
+            const parsed = JSON.parse(storedDurations);
+            setSelectedDurations(Array.isArray(parsed) ? parsed : []);
+          } catch (e) {
+            setSelectedDurations([]);
+          }
+        }
+      }
+    };
+
+    loadFilters();
+
+    // Listen for focus event to reload filters when returning to page
+    window.addEventListener('focus', loadFilters);
+    return () => window.removeEventListener('focus', loadFilters);
+  }, []);
+
+  const allLocations = [{ id: '00', name: 'All' }, ...LOCATIONS];
+  
+  const filteredLocations = allLocations.filter(location =>
     location.name.toLowerCase().includes(locationSearch.toLowerCase())
   );
+
+  const checkDurationMatch = (activityDurations: number[], selectedDurationIds: string[]): boolean => {
+    if (selectedDurationIds.length === 0) return true;
+
+    const durationRanges = selectedDurationIds.map(id => {
+      switch (id) {
+        case 'less-1':
+          return { min: 0, max: 1 };
+        case '1-3':
+          return { min: 1, max: 3 };
+        case '3-5':
+          return { min: 3, max: 5 };
+        case '5-plus':
+          return { min: 5, max: Infinity };
+        default:
+          return null;
+      }
+    }).filter(range => range !== null) as { min: number; max: number }[];
+
+    // Check if any of the activity's time slot durations match any selected range
+    return activityDurations.some(duration => 
+      durationRanges.some(range => {
+        if (range.max === Infinity) {
+          return duration >= range.min;
+        }
+        return duration >= range.min && duration <= range.max;
+      })
+    );
+  };
 
   const filteredActivities = activities.filter(activity => {
     const matchesLocation = !selectedLocation || activity.location === selectedLocation;
     const matchesSearch = !searchQuery || 
       activity.name.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesLocation && matchesSearch;
+    const matchesLanguage = selectedLanguages.length === 0 || 
+      selectedLanguages.includes(activity.language);
+    const matchesDuration = checkDurationMatch(activity.duration, selectedDurations);
+    return matchesLocation && matchesSearch && matchesLanguage && matchesDuration;
   });
 
   const handleLocationSelect = (locationName: string) => {
-    setSelectedLocation(locationName);
-    setLocationSearch(locationName);
+    if (locationName === 'All') {
+      setSelectedLocation('');
+      setLocationSearch('');
+    } else {
+      setSelectedLocation(locationName);
+      setLocationSearch(locationName);
+    }
     setShowLocationDropdown(false);
   };
 
@@ -73,6 +151,35 @@ export default function TravelerHomePage() {
   const getCurrentDateName = () => {
     const date = DATES.find(d => d.id === currentDate);
     return date?.name || 'November 27th, 2025';
+  };
+
+  const removeLanguageFilter = (languageToRemove: string) => {
+    const updatedLanguages = selectedLanguages.filter(lang => lang !== languageToRemove);
+    setSelectedLanguages(updatedLanguages);
+    // Update sessionStorage
+    sessionStorage.setItem('selectedLanguages', JSON.stringify(updatedLanguages));
+  };
+
+  const removeDurationFilter = (durationIdToRemove: string) => {
+    const updatedDurations = selectedDurations.filter(id => id !== durationIdToRemove);
+    setSelectedDurations(updatedDurations);
+    // Update sessionStorage
+    sessionStorage.setItem('selectedDurations', JSON.stringify(updatedDurations));
+  };
+
+  const getDurationLabel = (durationId: string): string => {
+    switch (durationId) {
+      case 'less-1':
+        return 'Less than 1 hour';
+      case '1-3':
+        return '1-3 hours';
+      case '3-5':
+        return '3-5 hours';
+      case '5-plus':
+        return '5+ hours';
+      default:
+        return durationId;
+    }
   };
 
   return (
@@ -105,7 +212,7 @@ export default function TravelerHomePage() {
                 setLocationSearch(e.target.value);
                 setShowLocationDropdown(true);
               }}
-              placeholder="Select location"
+              placeholder={selectedLocation ? locationSearch : "All locations"}
               className="w-full outline-none bg-transparent text-black placeholder:text-gray-500"
             />
           </div>
@@ -185,7 +292,47 @@ export default function TravelerHomePage() {
 
       {/* Scrollable Content */}
       <div className="p-6" style={{ backgroundColor: 'var(--background)' }}>
-        <h3 className="font-bold text-2xl mb-4 text-black">Trending Activities Worldwide</h3>
+        {/* Filter Tags Section */}
+        {(selectedLanguages.length > 0 || selectedDurations.length > 0) && (
+          <div className="mb-6 space-y-4">
+            {/* Language Filter Tags */}
+            {selectedLanguages.length > 0 && (
+              <div>
+                <p className="text-sm font-semibold text-gray-600 mb-3">Languages:</p>
+                <div className="flex flex-wrap gap-2">
+                  {selectedLanguages.map((language) => (
+                    <FilterTag
+                      key={language}
+                      label={language}
+                      onRemove={() => removeLanguageFilter(language)}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Duration Filter Tags */}
+            {selectedDurations.length > 0 && (
+              <div>
+                <p className="text-sm font-semibold text-gray-600 mb-3">Duration:</p>
+                <div className="flex flex-wrap gap-2">
+                  {selectedDurations.map((durationId) => (
+                    <FilterTag
+                      key={durationId}
+                      label={getDurationLabel(durationId)}
+                      onRemove={() => removeDurationFilter(durationId)}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Only show heading when no filters are applied */}
+        {!selectedLocation && selectedLanguages.length === 0 && selectedDurations.length === 0 && (
+          <h3 className="font-bold text-2xl mb-4 text-black">Trending Activities Worldwide</h3>
+        )}
         
         <div className="flex justify-between items-center mb-6">
           <p className="text-black text-lg font-normal">{getCurrentDateName()}</p>
@@ -242,46 +389,19 @@ export default function TravelerHomePage() {
             )}
           </div>
         ) : (
-          <div className="w-full h-[400px] bg-[#EBF3F5] rounded-3xl border-2 border-white shadow-inner flex flex-col items-center justify-center relative overflow-hidden group">
-            {/* Artistic Map Background */}
-            <div className="absolute inset-0 opacity-20">
-              <svg width="100%" height="100%">
-                <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#A0C0C8" strokeWidth="1"/>
-                </pattern>
-                <rect width="100%" height="100%" fill="url(#grid)" />
-              </svg>
-            </div>
-            
-            {/* Floating Landmasses */}
-            <div className="absolute top-10 left-[-20px] w-48 h-48 bg-[#D4E6E8] rounded-full mix-blend-multiply filter blur-2xl opacity-70 animate-pulse"></div>
-            <div className="absolute bottom-10 right-[-20px] w-64 h-64 bg-[#C2E0C4] rounded-full mix-blend-multiply filter blur-2xl opacity-70 animate-pulse delay-1000"></div>
-            
-            <div className="z-10 bg-white/90 backdrop-blur-sm px-4 py-3 rounded-2xl shadow-lg flex items-center gap-3 animate-bounce border border-white/50">
-              <div className="w-2.5 h-2.5 bg-red-500 rounded-full shadow-[0_0_8px_rgba(239,68,68,0.6)]"></div>
-              <span className="text-xs font-bold text-gray-700">Coming Soon!</span>
-            </div>
-            
-            {/* Interactive Pins */}
-            {[
-              { t: '30%', l: '25%', emoji: '🍷' },
-              { t: '45%', r: '20%', emoji: '🌸' },
-              { t: '60%', l: '40%', emoji: '🍲' },
-              { t: '20%', r: '35%', emoji: '🏔️' }
-            ].map((pin, i) => (
-              <div 
-                key={i}
-                style={{ top: pin.t, left: pin.l, right: pin.r }}
-                className="absolute transform hover:scale-125 transition-transform cursor-pointer"
-              >
-                <div className="w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center text-sm border-2 border-white relative z-10">
-                  {pin.emoji}
-                </div>
-                <div className="w-2 h-2 bg-black/10 rounded-full absolute -bottom-1 left-1/2 -translate-x-1/2 blur-[1px]"></div>
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0.5 h-3 bg-gray-400 -z-10 origin-bottom transform rotate-12"></div>
-              </div>
-            ))}
-          </div>
+          <MapView 
+            selectedLocation={selectedLocation} 
+            activities={filteredActivities}
+            onToggleFavorite={handleToggleFavorite}
+            onInterested={(activityId, timeSlot) => {
+              handleInterested(activityId, timeSlot);
+              setShowSuccessNotification(true);
+            }}
+            onLocationSelect={(locationName) => {
+              setSelectedLocation(locationName);
+              setLocationSearch(locationName);
+            }}
+          />
         )}
       </div>
       <TravelerNav current="search" />
@@ -292,6 +412,7 @@ export default function TravelerHomePage() {
           onClose={() => setSelectedActivity(null)}
           onInterested={handleInterested}
           onToggleFavorite={handleToggleFavorite}
+          onShowNotification={() => setShowSuccessNotification(true)}
         />
       )}
 
@@ -301,6 +422,14 @@ export default function TravelerHomePage() {
           currentDateId={currentDate}
           onSelectDate={handleDateSelect}
           onClose={() => setShowDatePicker(false)}
+        />
+      )}
+
+      {showSuccessNotification && (
+        <Notification
+          message="Activity added"
+          type="success"
+          onClose={() => setShowSuccessNotification(false)}
         />
       )}
     </div>

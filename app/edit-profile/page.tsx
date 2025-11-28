@@ -1,22 +1,14 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { X, Camera, User } from 'lucide-react';
-import { Profile } from '@/lib/types';
+import { useRouter } from 'next/navigation';
+import { X, Camera, User, ChevronRight } from 'lucide-react';
+import { useProfile } from '@/lib/ProfileContext';
 
-interface EditProfileModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  profile: Profile;
-  onSave: (updates: Partial<Profile>) => void;
-}
-
-export const EditProfileModal: React.FC<EditProfileModalProps> = ({
-  isOpen,
-  onClose,
-  profile,
-  onSave
-}) => {
+export default function EditProfilePage() {
+  const router = useRouter();
+  const { profile, updateProfile } = useProfile();
+  
   const [formData, setFormData] = useState({
     name: profile.name,
     age: profile.age.toString(),
@@ -24,16 +16,15 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
     birthday: profile.birthday,
     homeCity: profile.homeCity,
     locationSharing: profile.locationSharing,
-    mode: profile.mode
+    mode: profile.mode,
+    languageSpoken: profile.languageSpoken
   });
   const [avatarPreview, setAvatarPreview] = useState<string>(profile.avatar);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  if (!isOpen) return null;
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({
+    updateProfile({
       name: formData.name,
       age: parseInt(formData.age),
       email: formData.email,
@@ -41,9 +32,10 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
       homeCity: formData.homeCity,
       locationSharing: formData.locationSharing,
       mode: formData.mode as 'Local' | 'Traveler',
-      avatar: avatarPreview
+      avatar: avatarPreview,
+      languageSpoken: formData.languageSpoken
     });
-    onClose();
+    router.back();
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -86,11 +78,11 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-50 max-w-md mx-auto relative font-sans z-50 animate-in slide-in-from-right duration-300 overflow-y-auto">
+    <div className="min-h-screen bg-gray-50 max-w-md mx-auto relative font-sans animate-in slide-in-from-right duration-300 overflow-y-auto">
       <div className="p-6 pb-32">
         <div className="flex justify-between items-center mb-10 pt-6">
           <h2 className="text-2xl font-bold text-black">Edit Profile</h2>
-          <button onClick={onClose} className="p-2 rounded-full bg-white hover:bg-gray-100 transition-colors">
+          <button onClick={() => router.back()} className="p-2 rounded-full bg-white hover:bg-gray-100 transition-colors">
             <X size={24} className="text-gray-900" />
           </button>
         </div>
@@ -144,6 +136,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
               )}
             </div>
           </div>
+
           <div>
             <label className="block text-sm font-bold text-gray-700 mb-2">
               Name
@@ -219,22 +212,18 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
           <div>
             <label className="block text-sm font-bold text-gray-700 mb-2">
-              Location Sharing
+              Location & Safety Settings
             </label>
-            <select
-              name="locationSharing"
-              value={formData.locationSharing}
-              onChange={handleChange}
-              className="w-full bg-white border border-gray-200 rounded-2xl py-3.5 px-4 text-sm font-medium focus:outline-none focus:border-gray-300 transition-all"
-              required
+            <button
+              type="button"
+              onClick={() => router.push('/location-safety')}
+              className="w-full bg-white border border-gray-200 rounded-2xl py-3.5 px-4 text-sm font-medium hover:bg-gray-50 transition-all flex items-center justify-between group"
             >
-              <option value="Indefinitely">Indefinitely</option>
-              <option value="1 Day">1 Day</option>
-              <option value="3 Days">3 Days</option>
-              <option value="1 Week">1 Week</option>
-              <option value="1 Month">1 Month</option>
-              <option value="Never">Never</option>
-            </select>
+              <span className="text-gray-900">
+                {formData.locationSharing}
+              </span>
+              <ChevronRight size={20} className="text-gray-400 group-hover:text-gray-600 transition-colors" />
+            </button>
           </div>
 
           <div>
@@ -253,6 +242,20 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
             </select>
           </div>
 
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2">
+              Language Spoken
+            </label>
+            <input
+              type="text"
+              name="languageSpoken"
+              value={formData.languageSpoken}
+              onChange={handleChange}
+              className="w-full bg-white border border-gray-200 rounded-2xl py-3.5 px-4 text-sm font-medium focus:outline-none focus:border-gray-300 transition-all"
+              required
+            />
+          </div>
+
           <div className="fixed bottom-8 left-0 right-0 max-w-md mx-auto px-6">
             <button 
               type="submit"
@@ -266,5 +269,5 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
       </div>
     </div>
   );
-};
+}
 

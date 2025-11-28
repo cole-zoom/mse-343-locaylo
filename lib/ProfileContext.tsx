@@ -17,9 +17,17 @@ const defaultProfile: Profile = {
   birthday: '03/10/04',
   homeCity: 'Milan, Italy',
   locationSharing: 'Indefinitely',
+  sharingWith: 'Jeff, Yoon',
   mode: 'Local',
   avatar: '',
-  isVerified: false
+  isVerified: false,
+  languageSpoken: 'English',
+  emergencyContacts: [
+    { id: '1', name: 'Sandra Montana', phone: '+1-782-919-4667' },
+    { id: '2', name: 'Yoon Kazi', phone: '+1-647-180-4444' }
+  ],
+  shareActivityWithContacts: true,
+  safetyTipsEnabled: true
 };
 
 export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {

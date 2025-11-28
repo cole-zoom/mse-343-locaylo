@@ -1,14 +1,40 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronRight, X } from 'lucide-react';
+import { Notification } from '../ui/Notification';
 
 export default function FilterPage() {
   const router = useRouter();
-  const [selectedLanguage, setSelectedLanguage] = useState<string | null>(
-    typeof window !== 'undefined' ? sessionStorage.getItem('selectedLanguage') : null
-  );
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
+  const [selectedDurations, setSelectedDurations] = useState<string[]>([]);
+  const [showNotification, setShowNotification] = useState(false);
+
+  useEffect(() => {
+    // Load selected filters from sessionStorage
+    if (typeof window !== 'undefined') {
+      const storedLanguages = sessionStorage.getItem('selectedLanguages');
+      if (storedLanguages) {
+        try {
+          const parsed = JSON.parse(storedLanguages);
+          setSelectedLanguages(Array.isArray(parsed) ? parsed : []);
+        } catch (e) {
+          setSelectedLanguages([]);
+        }
+      }
+
+      const storedDurations = sessionStorage.getItem('selectedDurations');
+      if (storedDurations) {
+        try {
+          const parsed = JSON.parse(storedDurations);
+          setSelectedDurations(Array.isArray(parsed) ? parsed : []);
+        } catch (e) {
+          setSelectedDurations([]);
+        }
+      }
+    }
+  }, []);
 
   const handleGoBack = () => {
     router.back();
@@ -16,6 +42,22 @@ export default function FilterPage() {
 
   const handleApplyFilters = () => {
     router.push('/traveler-home');
+  };
+
+  const getLanguagesDisplay = () => {
+    if (selectedLanguages.length === 0) return 'Any';
+    if (selectedLanguages.length === 1) return selectedLanguages[0];
+    return `${selectedLanguages.length} selected`;
+  };
+
+  const getDurationsDisplay = () => {
+    if (selectedDurations.length === 0) return 'Any';
+    if (selectedDurations.length === 1) return '1 selected';
+    return `${selectedDurations.length} selected`;
+  };
+
+  const handleUnimplementedFilter = () => {
+    setShowNotification(true);
   };
 
   return (
@@ -36,13 +78,13 @@ export default function FilterPage() {
               {['Age Range', 'Languages', 'Gender'].map((item) => (
                 <div 
                   key={item}
-                  onClick={item === 'Languages' ? () => router.push('/language-select') : undefined}
+                  onClick={item === 'Languages' ? () => router.push('/language-select') : handleUnimplementedFilter}
                   className="flex justify-between items-center py-4 border-b border-gray-100 cursor-pointer group active:bg-white transition-colors px-2 rounded-lg"
                 >
                   <span className="text-gray-600 font-medium group-hover:text-gray-900">{item}</span>
                   <div className="flex items-center gap-2">
                     <span className="text-gray-900 font-bold text-sm">
-                      {item === 'Languages' && selectedLanguage ? selectedLanguage : 'Any'}
+                      {item === 'Languages' ? getLanguagesDisplay() : 'Any'}
                     </span>
                     <ChevronRight size={18} className="text-gray-300 group-hover:text-gray-500" />
                   </div>
@@ -55,8 +97,12 @@ export default function FilterPage() {
           <div>
             <h3 className="font-bold text-gray-900 text-lg mb-4">Activity characteristics</h3>
             <div className="space-y-1">
-              {['Activity Type', 'Activity Timings', 'Activity Duration', 'Activity Cost'].map((item) => (
-                <div key={item} className="flex justify-between items-center py-4 border-b border-gray-100 cursor-pointer group active:bg-white transition-colors px-2 rounded-lg">
+              {['Activity Type', 'Activity Timings'].map((item) => (
+                <div 
+                  key={item} 
+                  onClick={handleUnimplementedFilter}
+                  className="flex justify-between items-center py-4 border-b border-gray-100 cursor-pointer group active:bg-white transition-colors px-2 rounded-lg"
+                >
                   <span className="text-gray-600 font-medium group-hover:text-gray-900">{item}</span>
                   <div className="flex items-center gap-2">
                     <span className="text-gray-900 font-bold text-sm">Any</span>
@@ -64,7 +110,30 @@ export default function FilterPage() {
                   </div>
                 </div>
               ))}
-              <div className="flex justify-between items-center py-4 border-b border-gray-100 cursor-pointer group active:bg-white transition-colors px-2 rounded-lg">
+              <div 
+                onClick={() => router.push('/duration-select')}
+                className="flex justify-between items-center py-4 border-b border-gray-100 cursor-pointer group active:bg-white transition-colors px-2 rounded-lg"
+              >
+                <span className="text-gray-600 font-medium group-hover:text-gray-900">Activity Duration</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-900 font-bold text-sm">{getDurationsDisplay()}</span>
+                  <ChevronRight size={18} className="text-gray-300 group-hover:text-gray-500" />
+                </div>
+              </div>
+              <div 
+                onClick={handleUnimplementedFilter}
+                className="flex justify-between items-center py-4 border-b border-gray-100 cursor-pointer group active:bg-white transition-colors px-2 rounded-lg"
+              >
+                <span className="text-gray-600 font-medium group-hover:text-gray-900">Activity Cost</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-900 font-bold text-sm">Any</span>
+                  <ChevronRight size={18} className="text-gray-300 group-hover:text-gray-500" />
+                </div>
+              </div>
+              <div 
+                onClick={handleUnimplementedFilter}
+                className="flex justify-between items-center py-4 border-b border-gray-100 cursor-pointer group active:bg-white transition-colors px-2 rounded-lg"
+              >
                 <span className="text-gray-600 font-medium group-hover:text-gray-900">Accessibility Options</span>
                 <div className="flex items-center gap-2">
                   <span className="text-gray-900 font-bold text-sm">Choose</span>
@@ -84,6 +153,13 @@ export default function FilterPage() {
             Apply Filter(s)
           </button>
         </div>
+
+        {showNotification && (
+          <Notification
+            message="Filter not implemented yet"
+            onClose={() => setShowNotification(false)}
+          />
+        )}
       </div>
     </div>
   );

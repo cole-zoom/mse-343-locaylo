@@ -9,21 +9,32 @@ interface ActivityDetailsModalProps {
   onClose: () => void;
   onInterested: (activityId: string, timeSlot: string) => void;
   onToggleFavorite: (activityId: string) => void;
+  onShowNotification?: () => void;
 }
 
 export function ActivityDetailsModal({ 
   activity, 
   onClose, 
   onInterested,
-  onToggleFavorite 
+  onToggleFavorite,
+  onShowNotification
 }: ActivityDetailsModalProps) {
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string | null>(null);
+  const [isFavorite, setIsFavorite] = useState(activity.isFavorite);
 
   const handleInterested = () => {
     if (selectedTimeSlot) {
       onInterested(activity.id, selectedTimeSlot);
+      if (onShowNotification) {
+        onShowNotification();
+      }
       onClose();
     }
+  };
+
+  const handleToggleFavorite = () => {
+    setIsFavorite(!isFavorite);
+    onToggleFavorite(activity.id);
   };
 
   return (
@@ -50,20 +61,23 @@ export function ActivityDetailsModal({
             <h2 className="text-2xl font-bold text-black mb-1">{activity.name}</h2>
             <p className="text-base text-gray-600">{activity.location.split(',')[0]}</p>
           </div>
-          <button
-            onClick={() => onToggleFavorite(activity.id)}
-            className="p-2 hover:scale-110 transition-transform"
-          >
-            <Heart 
-              size={28} 
-              className={activity.isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400'}
-            />
-          </button>
         </div>
 
         {/* Available time slots */}
         <div className="mb-8">
-          <h3 className="text-lg font-bold text-black mb-4">Available time slots</h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-bold text-black">Available time slots</h3>
+            <button
+              onClick={handleToggleFavorite}
+              className="p-2 hover:scale-110 transition-transform"
+            >
+              <Heart 
+                size={28} 
+                className={isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400 hover:text-red-500'}
+                strokeWidth={2}
+              />
+            </button>
+          </div>
           <div className="flex flex-wrap gap-3">
             {activity.availableTimeSlots.map((slot) => (
               <button

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X } from 'lucide-react';
+import { X, ChevronDown } from 'lucide-react';
 import { useActivities } from '@/lib/ActivityContext';
 import { DATES } from '@/lib/data';
 
@@ -10,6 +10,8 @@ interface AddActivityModalProps {
   onClose: () => void;
 }
 
+const ACCESSIBILITY_OPTIONS = ['Wheelchair Accessible', 'Visual Impairment', 'Auditory Impairment'];
+
 export const AddActivityModal: React.FC<AddActivityModalProps> = ({ isOpen, onClose }) => {
   const { addActivity } = useActivities();
   const [name, setName] = useState('');
@@ -17,6 +19,8 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({ isOpen, onCl
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [status, setStatus] = useState<'pending' | 'scheduled'>('pending');
+  const [accessibilityOptions, setAccessibilityOptions] = useState<string[]>([]);
+  const [isAccessibilityOpen, setIsAccessibilityOpen] = useState(false);
 
   if (!isOpen) return null;
 
@@ -29,6 +33,8 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({ isOpen, onCl
       setStartTime('');
       setEndTime('');
       setStatus('pending');
+      setAccessibilityOptions([]);
+      setIsAccessibilityOpen(false);
       onClose();
     }
   };
@@ -48,6 +54,15 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({ isOpen, onCl
         formatted = digits.slice(0, 2) + ':' + digits.slice(2);
       }
       setter(formatted);
+    }
+  };
+
+  // Toggle accessibility option
+  const toggleAccessibilityOption = (option: string) => {
+    if (accessibilityOptions.includes(option)) {
+      setAccessibilityOptions(accessibilityOptions.filter(o => o !== option));
+    } else {
+      setAccessibilityOptions([...accessibilityOptions, option]);
     }
   };
 
@@ -170,6 +185,84 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({ isOpen, onCl
               placeholder="17:00"
               maxLength={5}
             />
+          </div>
+
+          {/* Accessibility Options Field */}
+          <div>
+            <label 
+              className="block text-sm font-bold mb-2"
+              style={{ color: 'var(--text-primary)' }}
+            >
+              Accessibility Options
+            </label>
+            <div className="relative">
+              {/* Dropdown Toggle Button */}
+              <button
+                type="button"
+                onClick={() => setIsAccessibilityOpen(!isAccessibilityOpen)}
+                className="w-full p-4 rounded-3xl text-base font-medium focus:outline-none transition-all flex items-center justify-between"
+                style={{ 
+                  backgroundColor: 'var(--surface-white)',
+                  border: '2px solid var(--border-default)',
+                  color: accessibilityOptions.length > 0 ? 'var(--text-primary)' : 'var(--text-muted)'
+                }}
+              >
+                <span>
+                  {accessibilityOptions.length > 0 
+                    ? accessibilityOptions.join(', ')
+                    : 'Select accessibility options'
+                  }
+                </span>
+                <ChevronDown 
+                  size={20} 
+                  className={`transition-transform ${isAccessibilityOpen ? 'rotate-180' : ''}`}
+                  style={{ color: 'var(--text-muted)' }}
+                />
+              </button>
+
+              {/* Dropdown Menu */}
+              {isAccessibilityOpen && (
+                <div 
+                  className="absolute w-full mt-2 rounded-3xl overflow-hidden z-10"
+                  style={{ 
+                    backgroundColor: 'var(--surface-white)',
+                    border: '2px solid var(--border-default)',
+                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)'
+                  }}
+                >
+                  {ACCESSIBILITY_OPTIONS.map((option) => (
+                    <button
+                      key={option}
+                      type="button"
+                      onClick={() => toggleAccessibilityOption(option)}
+                      className="w-full p-4 text-left text-base font-medium transition-all hover:opacity-80 flex items-center gap-3"
+                      style={{ 
+                        backgroundColor: accessibilityOptions.includes(option) 
+                          ? 'var(--primary-blue)' 
+                          : 'var(--surface-white)',
+                        color: 'var(--text-primary)'
+                      }}
+                    >
+                      {/* Checkbox */}
+                      <div 
+                        className="w-5 h-5 rounded flex items-center justify-center"
+                        style={{ 
+                          border: '2px solid var(--border-default)',
+                          backgroundColor: accessibilityOptions.includes(option) 
+                            ? 'var(--primary-blue-text)' 
+                            : 'var(--surface-white)'
+                        }}
+                      >
+                        {accessibilityOptions.includes(option) && (
+                          <X size={14} style={{ color: 'var(--surface-white)' }} />
+                        )}
+                      </div>
+                      <span className="capitalize">{option}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Status Field */}

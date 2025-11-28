@@ -44,6 +44,8 @@ export interface TravelerActivity {
   endTime?: string;
   date?: string;
   emoji: string;
+  language: string;
+  duration: number[];
 }
 
 export interface LocalActivity {
@@ -83,6 +85,13 @@ export interface Chat {
   messages: ChatMessage[];
 }
 
+// Emergency Contact interface
+export interface EmergencyContact {
+  id: string;
+  name: string;
+  phone: string;
+}
+
 // Profile interface
 export interface Profile {
   name: string;
@@ -91,8 +100,13 @@ export interface Profile {
   birthday: string;
   homeCity: string;
   locationSharing: string;
+  sharingWith?: string;
   mode: 'Local' | 'Traveler';
   avatar: string;
   isVerified: boolean;
+  languageSpoken: string;
+  emergencyContacts?: EmergencyContact[];
+  shareActivityWithContacts?: boolean;
+  safetyTipsEnabled?: boolean;
 }
 

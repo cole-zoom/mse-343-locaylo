@@ -14,7 +14,9 @@ export const LOCAL_ACTIVITIES: LocalActivity[] = [
   { id: '3', title: 'Pottery Painting', date: '11272025', time: '13:00 - 14:00', status: 'scheduled' },
 ];
 
-export const POPULAR_LANGUAGES = ['English', 'Hindi', 'French', 'German', 'Mandarin'];
+export const POPULAR_LANGUAGES = ['English', 'French', 'German', 'Mandarin'];
+
+export const ALL_LANGUAGES = ['Arabic', 'Catalan', 'Dutch', 'English', 'French', 'German', 'Italian', 'Japanese', 'Malay', 'Mandarin', 'Spanish', 'Thai'];
 
 // Helper function to get ordinal suffix
 const getOrdinalSuffix = (day: number): string => {
@@ -59,87 +61,87 @@ export const LOCATIONS: Location[] = [
 
 export const TRAVELER_ACTIVITIES: TravelerActivity[] = [
   // Bangkok, Thailand
-  { id: '1', name: 'Flower Market', location: 'Bangkok, Thailand', availableTimeSlots: ['09:00-13:30', '16:00-19:00'], isFavorite: false, isAdded: false, emoji: '🌸' },
-  { id: '2', name: 'Street Food Tour', location: 'Bangkok, Thailand', availableTimeSlots: ['18:00-21:00', '19:00-22:00'], isFavorite: false, isAdded: false, emoji: '🍜' },
-  { id: '3', name: 'Temple Visit', location: 'Bangkok, Thailand', availableTimeSlots: ['08:00-11:00', '14:00-17:00'], isFavorite: false, isAdded: false, emoji: '🛕' },
-  { id: '4', name: 'Thai Cooking Class', location: 'Bangkok, Thailand', availableTimeSlots: ['10:00-13:00', '15:00-18:00'], isFavorite: false, isAdded: false, emoji: '👨‍🍳' },
-  { id: '5', name: 'Floating Market', location: 'Bangkok, Thailand', availableTimeSlots: ['06:00-10:00', '07:00-11:00'], isFavorite: false, isAdded: false, emoji: '🚣' },
+  { id: '1', name: 'Flower Market', location: 'Bangkok, Thailand', availableTimeSlots: ['09:00-13:30', '16:00-19:00'], isFavorite: false, isAdded: false, emoji: '🌸', language: 'Thai', duration: [4.5, 3] },
+  { id: '2', name: 'Street Food Tour', location: 'Bangkok, Thailand', availableTimeSlots: ['18:00-21:00', '19:00-22:00'], isFavorite: false, isAdded: false, emoji: '🍜', language: 'English', duration: [3, 3] },
+  { id: '3', name: 'Temple Visit', location: 'Bangkok, Thailand', availableTimeSlots: ['08:00-11:00', '14:00-17:00'], isFavorite: false, isAdded: false, emoji: '🛕', language: 'Thai', duration: [3, 3] },
+  { id: '4', name: 'Thai Cooking Class', location: 'Bangkok, Thailand', availableTimeSlots: ['10:00-13:00', '15:00-18:00'], isFavorite: false, isAdded: false, emoji: '👨‍🍳', language: 'English', duration: [3, 3] },
+  { id: '5', name: 'Floating Market', location: 'Bangkok, Thailand', availableTimeSlots: ['06:00-10:00', '07:00-11:00'], isFavorite: false, isAdded: false, emoji: '🚣', language: 'Thai', duration: [4, 4] },
   
   // Bordeaux, France
-  { id: '6', name: 'Wine Tasting', location: 'Bordeaux, France', availableTimeSlots: ['11:00-14:00', '16:00-19:00'], isFavorite: false, isAdded: false, emoji: '🍷' },
-  { id: '7', name: 'Vineyard Tour', location: 'Bordeaux, France', availableTimeSlots: ['09:00-12:00', '14:00-17:00'], isFavorite: false, isAdded: false, emoji: '🍇' },
-  { id: '8', name: 'Cheese Pairing', location: 'Bordeaux, France', availableTimeSlots: ['12:00-14:00', '18:00-20:00'], isFavorite: false, isAdded: false, emoji: '🧀' },
-  { id: '9', name: 'Bike Through Vineyards', location: 'Bordeaux, France', availableTimeSlots: ['08:00-11:00', '15:00-18:00'], isFavorite: false, isAdded: false, emoji: '🚴' },
-  { id: '10', name: 'French Bakery Class', location: 'Bordeaux, France', availableTimeSlots: ['07:00-10:00', '13:00-16:00'], isFavorite: false, isAdded: false, emoji: '🥐' },
+  { id: '6', name: 'Wine Tasting', location: 'Bordeaux, France', availableTimeSlots: ['11:00-14:00', '16:00-19:00'], isFavorite: false, isAdded: false, emoji: '🍷', language: 'French', duration: [3, 3] },
+  { id: '7', name: 'Vineyard Tour', location: 'Bordeaux, France', availableTimeSlots: ['09:00-12:00', '14:00-17:00'], isFavorite: false, isAdded: false, emoji: '🍇', language: 'English', duration: [3, 3] },
+  { id: '8', name: 'Cheese Pairing', location: 'Bordeaux, France', availableTimeSlots: ['12:00-14:00', '18:00-20:00'], isFavorite: false, isAdded: false, emoji: '🧀', language: 'French', duration: [2, 2] },
+  { id: '9', name: 'Bike Through Vineyards', location: 'Bordeaux, France', availableTimeSlots: ['08:00-11:00', '15:00-18:00'], isFavorite: false, isAdded: false, emoji: '🚴', language: 'English', duration: [3, 3] },
+  { id: '10', name: 'French Bakery Class', location: 'Bordeaux, France', availableTimeSlots: ['07:00-10:00', '13:00-16:00'], isFavorite: false, isAdded: false, emoji: '🥐', language: 'French', duration: [3, 3] },
   
   // Barcelona, Spain
-  { id: '11', name: 'Sagrada Familia Tour', location: 'Barcelona, Spain', availableTimeSlots: ['09:00-12:00', '14:00-17:00'], isFavorite: false, isAdded: false, emoji: '⛪' },
-  { id: '12', name: 'Tapas Crawl', location: 'Barcelona, Spain', availableTimeSlots: ['19:00-22:00', '20:00-23:00'], isFavorite: false, isAdded: false, emoji: '🍤' },
-  { id: '13', name: 'Beach Volleyball', location: 'Barcelona, Spain', availableTimeSlots: ['10:00-13:00', '16:00-19:00'], isFavorite: false, isAdded: false, emoji: '🏐' },
-  { id: '14', name: 'Flamenco Show', location: 'Barcelona, Spain', availableTimeSlots: ['20:00-22:00', '21:00-23:00'], isFavorite: false, isAdded: false, emoji: '💃' },
-  { id: '15', name: 'Park Güell Walk', location: 'Barcelona, Spain', availableTimeSlots: ['08:00-11:00', '15:00-18:00'], isFavorite: false, isAdded: false, emoji: '🌳' },
+  { id: '11', name: 'Sagrada Familia Tour', location: 'Barcelona, Spain', availableTimeSlots: ['09:00-12:00', '14:00-17:00'], isFavorite: false, isAdded: false, emoji: '⛪', language: 'Spanish', duration: [3, 3] },
+  { id: '12', name: 'Tapas Crawl', location: 'Barcelona, Spain', availableTimeSlots: ['19:00-22:00', '20:00-23:00'], isFavorite: false, isAdded: false, emoji: '🍤', language: 'English', duration: [3, 3] },
+  { id: '13', name: 'Beach Volleyball', location: 'Barcelona, Spain', availableTimeSlots: ['10:00-13:00', '16:00-19:00'], isFavorite: false, isAdded: false, emoji: '🏐', language: 'Spanish', duration: [3, 3] },
+  { id: '14', name: 'Flamenco Show', location: 'Barcelona, Spain', availableTimeSlots: ['20:00-22:00', '21:00-23:00'], isFavorite: false, isAdded: false, emoji: '💃', language: 'Catalan', duration: [2, 2] },
+  { id: '15', name: 'Park Güell Walk', location: 'Barcelona, Spain', availableTimeSlots: ['08:00-11:00', '15:00-18:00'], isFavorite: false, isAdded: false, emoji: '🌳', language: 'English', duration: [3, 3] },
   
   // Tokyo, Japan
-  { id: '16', name: 'Sushi Making', location: 'Tokyo, Japan', availableTimeSlots: ['11:00-14:00', '17:00-20:00'], isFavorite: false, isAdded: false, emoji: '🍣' },
-  { id: '17', name: 'Sumo Wrestling', location: 'Tokyo, Japan', availableTimeSlots: ['13:00-16:00', '18:00-21:00'], isFavorite: false, isAdded: false, emoji: '🤼' },
-  { id: '18', name: 'Temple Garden', location: 'Tokyo, Japan', availableTimeSlots: ['07:00-10:00', '14:00-17:00'], isFavorite: false, isAdded: false, emoji: '🏯' },
-  { id: '19', name: 'Karaoke Night', location: 'Tokyo, Japan', availableTimeSlots: ['19:00-22:00', '20:00-23:00'], isFavorite: false, isAdded: false, emoji: '🎤' },
-  { id: '20', name: 'Ramen Tour', location: 'Tokyo, Japan', availableTimeSlots: ['18:00-21:00', '19:00-22:00'], isFavorite: false, isAdded: false, emoji: '🍜' },
+  { id: '16', name: 'Sushi Making', location: 'Tokyo, Japan', availableTimeSlots: ['11:00-14:00', '17:00-20:00'], isFavorite: false, isAdded: false, emoji: '🍣', language: 'Japanese', duration: [3, 3] },
+  { id: '17', name: 'Sumo Wrestling', location: 'Tokyo, Japan', availableTimeSlots: ['13:00-16:00', '18:00-21:00'], isFavorite: false, isAdded: false, emoji: '🤼', language: 'English', duration: [3, 3] },
+  { id: '18', name: 'Temple Garden', location: 'Tokyo, Japan', availableTimeSlots: ['07:00-10:00', '14:00-17:00'], isFavorite: false, isAdded: false, emoji: '🏯', language: 'Japanese', duration: [3, 3] },
+  { id: '19', name: 'Karaoke Night', location: 'Tokyo, Japan', availableTimeSlots: ['19:00-22:00', '20:00-23:00'], isFavorite: false, isAdded: false, emoji: '🎤', language: 'English', duration: [3, 3] },
+  { id: '20', name: 'Ramen Tour', location: 'Tokyo, Japan', availableTimeSlots: ['18:00-21:00', '19:00-22:00'], isFavorite: false, isAdded: false, emoji: '🍜', language: 'Japanese', duration: [3, 3] },
   
   // New York, USA
-  { id: '21', name: 'Broadway Show', location: 'New York, USA', availableTimeSlots: ['19:00-22:00', '20:00-23:00'], isFavorite: false, isAdded: false, emoji: '🎭' },
-  { id: '22', name: 'Central Park Bike', location: 'New York, USA', availableTimeSlots: ['09:00-12:00', '14:00-17:00'], isFavorite: false, isAdded: false, emoji: '🚲' },
-  { id: '23', name: 'Pizza Walking Tour', location: 'New York, USA', availableTimeSlots: ['11:00-14:00', '17:00-20:00'], isFavorite: false, isAdded: false, emoji: '🍕' },
-  { id: '24', name: 'Museum of Modern Art', location: 'New York, USA', availableTimeSlots: ['10:00-13:00', '14:00-17:00'], isFavorite: false, isAdded: false, emoji: '🎨' },
-  { id: '25', name: 'Brooklyn Bridge Walk', location: 'New York, USA', availableTimeSlots: ['08:00-11:00', '16:00-19:00'], isFavorite: false, isAdded: false, emoji: '🌉' },
+  { id: '21', name: 'Broadway Show', location: 'New York, USA', availableTimeSlots: ['19:00-22:00', '20:00-23:00'], isFavorite: false, isAdded: false, emoji: '🎭', language: 'English', duration: [3, 3] },
+  { id: '22', name: 'Central Park Bike', location: 'New York, USA', availableTimeSlots: ['09:00-12:00', '14:00-17:00'], isFavorite: false, isAdded: false, emoji: '🚲', language: 'English', duration: [3, 3] },
+  { id: '23', name: 'Pizza Walking Tour', location: 'New York, USA', availableTimeSlots: ['11:00-14:00', '17:00-20:00'], isFavorite: false, isAdded: false, emoji: '🍕', language: 'English', duration: [3, 3] },
+  { id: '24', name: 'Museum of Modern Art', location: 'New York, USA', availableTimeSlots: ['10:00-13:00', '14:00-17:00'], isFavorite: false, isAdded: false, emoji: '🎨', language: 'English', duration: [3, 3] },
+  { id: '25', name: 'Brooklyn Bridge Walk', location: 'New York, USA', availableTimeSlots: ['08:00-11:00', '16:00-19:00'], isFavorite: false, isAdded: false, emoji: '🌉', language: 'English', duration: [3, 3] },
   
   // Rome, Italy
-  { id: '26', name: 'Colosseum Tour', location: 'Rome, Italy', availableTimeSlots: ['09:00-12:00', '14:00-17:00'], isFavorite: false, isAdded: false, emoji: '🏛️' },
-  { id: '27', name: 'Pasta Making Class', location: 'Rome, Italy', availableTimeSlots: ['11:00-14:00', '16:00-19:00'], isFavorite: false, isAdded: false, emoji: '🍝' },
-  { id: '28', name: 'Vatican Museums', location: 'Rome, Italy', availableTimeSlots: ['08:00-11:00', '13:00-16:00'], isFavorite: false, isAdded: false, emoji: '🎨' },
-  { id: '29', name: 'Gelato Tour', location: 'Rome, Italy', availableTimeSlots: ['15:00-18:00', '17:00-20:00'], isFavorite: false, isAdded: false, emoji: '🍨' },
-  { id: '30', name: 'Vespa City Tour', location: 'Rome, Italy', availableTimeSlots: ['10:00-13:00', '14:00-17:00'], isFavorite: false, isAdded: false, emoji: '🛵' },
+  { id: '26', name: 'Colosseum Tour', location: 'Rome, Italy', availableTimeSlots: ['09:00-12:00', '14:00-17:00'], isFavorite: false, isAdded: false, emoji: '🏛️', language: 'Italian', duration: [3, 3] },
+  { id: '27', name: 'Pasta Making Class', location: 'Rome, Italy', availableTimeSlots: ['11:00-14:00', '16:00-19:00'], isFavorite: false, isAdded: false, emoji: '🍝', language: 'English', duration: [3, 3] },
+  { id: '28', name: 'Vatican Museums', location: 'Rome, Italy', availableTimeSlots: ['08:00-11:00', '13:00-16:00'], isFavorite: false, isAdded: false, emoji: '🎨', language: 'Italian', duration: [3, 3] },
+  { id: '29', name: 'Gelato Tour', location: 'Rome, Italy', availableTimeSlots: ['15:00-18:00', '17:00-20:00'], isFavorite: false, isAdded: false, emoji: '🍨', language: 'English', duration: [3, 3] },
+  { id: '30', name: 'Vespa City Tour', location: 'Rome, Italy', availableTimeSlots: ['10:00-13:00', '14:00-17:00'], isFavorite: false, isAdded: false, emoji: '🛵', language: 'Italian', duration: [3, 3] },
   
   // Dubai, UAE
-  { id: '31', name: 'Desert Safari', location: 'Dubai, UAE', availableTimeSlots: ['15:00-20:00', '16:00-21:00'], isFavorite: false, isAdded: false, emoji: '🏜️' },
-  { id: '32', name: 'Burj Khalifa Visit', location: 'Dubai, UAE', availableTimeSlots: ['10:00-12:00', '18:00-20:00'], isFavorite: false, isAdded: false, emoji: '🏙️' },
-  { id: '33', name: 'Spice Souk Tour', location: 'Dubai, UAE', availableTimeSlots: ['09:00-12:00', '16:00-19:00'], isFavorite: false, isAdded: false, emoji: '🧂' },
-  { id: '34', name: 'Dhow Cruise', location: 'Dubai, UAE', availableTimeSlots: ['19:00-22:00', '20:00-23:00'], isFavorite: false, isAdded: false, emoji: '⛵' },
-  { id: '35', name: 'Indoor Skiing', location: 'Dubai, UAE', availableTimeSlots: ['11:00-14:00', '15:00-18:00'], isFavorite: false, isAdded: false, emoji: '⛷️' },
+  { id: '31', name: 'Desert Safari', location: 'Dubai, UAE', availableTimeSlots: ['15:00-20:00', '16:00-21:00'], isFavorite: false, isAdded: false, emoji: '🏜️', language: 'Arabic', duration: [5, 5] },
+  { id: '32', name: 'Burj Khalifa Visit', location: 'Dubai, UAE', availableTimeSlots: ['10:00-12:00', '18:00-20:00'], isFavorite: false, isAdded: false, emoji: '🏙️', language: 'English', duration: [2, 2] },
+  { id: '33', name: 'Spice Souk Tour', location: 'Dubai, UAE', availableTimeSlots: ['09:00-12:00', '16:00-19:00'], isFavorite: false, isAdded: false, emoji: '🧂', language: 'Arabic', duration: [3, 3] },
+  { id: '34', name: 'Dhow Cruise', location: 'Dubai, UAE', availableTimeSlots: ['19:00-22:00', '20:00-23:00'], isFavorite: false, isAdded: false, emoji: '⛵', language: 'English', duration: [3, 3] },
+  { id: '35', name: 'Indoor Skiing', location: 'Dubai, UAE', availableTimeSlots: ['11:00-14:00', '15:00-18:00'], isFavorite: false, isAdded: false, emoji: '⛷️', language: 'Arabic', duration: [3, 3] },
   
   // London, UK
-  { id: '36', name: 'Tower of London', location: 'London, UK', availableTimeSlots: ['09:00-12:00', '14:00-17:00'], isFavorite: false, isAdded: false, emoji: '🏰' },
-  { id: '37', name: 'Afternoon Tea', location: 'London, UK', availableTimeSlots: ['14:00-16:00', '15:00-17:00'], isFavorite: false, isAdded: false, emoji: '☕' },
-  { id: '38', name: 'Thames River Cruise', location: 'London, UK', availableTimeSlots: ['11:00-13:00', '17:00-19:00'], isFavorite: false, isAdded: false, emoji: '🚢' },
-  { id: '39', name: 'West End Theatre', location: 'London, UK', availableTimeSlots: ['19:00-22:00', '20:00-23:00'], isFavorite: false, isAdded: false, emoji: '🎭' },
-  { id: '40', name: 'Camden Market', location: 'London, UK', availableTimeSlots: ['10:00-14:00', '13:00-17:00'], isFavorite: false, isAdded: false, emoji: '🛍️' },
+  { id: '36', name: 'Tower of London', location: 'London, UK', availableTimeSlots: ['09:00-12:00', '14:00-17:00'], isFavorite: false, isAdded: false, emoji: '🏰', language: 'English', duration: [3, 3] },
+  { id: '37', name: 'Afternoon Tea', location: 'London, UK', availableTimeSlots: ['14:00-16:00', '15:00-17:00'], isFavorite: false, isAdded: false, emoji: '☕', language: 'English', duration: [2, 2] },
+  { id: '38', name: 'Thames River Cruise', location: 'London, UK', availableTimeSlots: ['11:00-13:00', '17:00-19:00'], isFavorite: false, isAdded: false, emoji: '🚢', language: 'English', duration: [2, 2] },
+  { id: '39', name: 'West End Theatre', location: 'London, UK', availableTimeSlots: ['19:00-22:00', '20:00-23:00'], isFavorite: false, isAdded: false, emoji: '🎭', language: 'English', duration: [3, 3] },
+  { id: '40', name: 'Camden Market', location: 'London, UK', availableTimeSlots: ['10:00-14:00', '13:00-17:00'], isFavorite: false, isAdded: false, emoji: '🛍️', language: 'English', duration: [4, 4] },
   
   // Sydney, Australia
-  { id: '41', name: 'Opera House Tour', location: 'Sydney, Australia', availableTimeSlots: ['09:00-11:00', '14:00-16:00'], isFavorite: false, isAdded: false, emoji: '🎭' },
-  { id: '42', name: 'Bondi Beach Surf', location: 'Sydney, Australia', availableTimeSlots: ['08:00-11:00', '15:00-18:00'], isFavorite: false, isAdded: false, emoji: '🏄' },
-  { id: '43', name: 'Harbor Bridge Climb', location: 'Sydney, Australia', availableTimeSlots: ['07:00-10:00', '16:00-19:00'], isFavorite: false, isAdded: false, emoji: '🌉' },
-  { id: '44', name: 'Wildlife Park', location: 'Sydney, Australia', availableTimeSlots: ['09:00-13:00', '13:00-17:00'], isFavorite: false, isAdded: false, emoji: '🦘' },
-  { id: '45', name: 'Coastal Walk', location: 'Sydney, Australia', availableTimeSlots: ['06:00-09:00', '16:00-19:00'], isFavorite: false, isAdded: false, emoji: '🚶' },
+  { id: '41', name: 'Opera House Tour', location: 'Sydney, Australia', availableTimeSlots: ['09:00-11:00', '14:00-16:00'], isFavorite: false, isAdded: false, emoji: '🎭', language: 'English', duration: [2, 2] },
+  { id: '42', name: 'Bondi Beach Surf', location: 'Sydney, Australia', availableTimeSlots: ['08:00-11:00', '15:00-18:00'], isFavorite: false, isAdded: false, emoji: '🏄', language: 'English', duration: [3, 3] },
+  { id: '43', name: 'Harbor Bridge Climb', location: 'Sydney, Australia', availableTimeSlots: ['07:00-10:00', '16:00-19:00'], isFavorite: false, isAdded: false, emoji: '🌉', language: 'English', duration: [3, 3] },
+  { id: '44', name: 'Wildlife Park', location: 'Sydney, Australia', availableTimeSlots: ['09:00-13:00', '13:00-17:00'], isFavorite: false, isAdded: false, emoji: '🦘', language: 'English', duration: [4, 4] },
+  { id: '45', name: 'Coastal Walk', location: 'Sydney, Australia', availableTimeSlots: ['06:00-09:00', '16:00-19:00'], isFavorite: false, isAdded: false, emoji: '🚶', language: 'English', duration: [3, 3] },
   
   // Amsterdam, Netherlands
-  { id: '46', name: 'Canal Boat Tour', location: 'Amsterdam, Netherlands', availableTimeSlots: ['10:00-12:00', '15:00-17:00'], isFavorite: false, isAdded: false, emoji: '🚤' },
-  { id: '47', name: 'Van Gogh Museum', location: 'Amsterdam, Netherlands', availableTimeSlots: ['09:00-12:00', '13:00-16:00'], isFavorite: false, isAdded: false, emoji: '🎨' },
-  { id: '48', name: 'Cheese Tasting', location: 'Amsterdam, Netherlands', availableTimeSlots: ['11:00-13:00', '14:00-16:00'], isFavorite: false, isAdded: false, emoji: '🧀' },
-  { id: '49', name: 'Bike City Tour', location: 'Amsterdam, Netherlands', availableTimeSlots: ['10:00-13:00', '14:00-17:00'], isFavorite: false, isAdded: false, emoji: '🚴' },
-  { id: '50', name: 'Tulip Garden', location: 'Amsterdam, Netherlands', availableTimeSlots: ['08:00-11:00', '13:00-16:00'], isFavorite: false, isAdded: false, emoji: '🌷' },
+  { id: '46', name: 'Canal Boat Tour', location: 'Amsterdam, Netherlands', availableTimeSlots: ['10:00-12:00', '15:00-17:00'], isFavorite: false, isAdded: false, emoji: '🚤', language: 'Dutch', duration: [2, 2] },
+  { id: '47', name: 'Van Gogh Museum', location: 'Amsterdam, Netherlands', availableTimeSlots: ['09:00-12:00', '13:00-16:00'], isFavorite: false, isAdded: false, emoji: '🎨', language: 'English', duration: [3, 3] },
+  { id: '48', name: 'Cheese Tasting', location: 'Amsterdam, Netherlands', availableTimeSlots: ['11:00-13:00', '14:00-16:00'], isFavorite: false, isAdded: false, emoji: '🧀', language: 'Dutch', duration: [2, 2] },
+  { id: '49', name: 'Bike City Tour', location: 'Amsterdam, Netherlands', availableTimeSlots: ['10:00-13:00', '14:00-17:00'], isFavorite: false, isAdded: false, emoji: '🚴', language: 'English', duration: [3, 3] },
+  { id: '50', name: 'Tulip Garden', location: 'Amsterdam, Netherlands', availableTimeSlots: ['08:00-11:00', '13:00-16:00'], isFavorite: false, isAdded: false, emoji: '🌷', language: 'Dutch', duration: [3, 3] },
   
   // Berlin, Germany
-  { id: '51', name: 'Berlin Wall Tour', location: 'Berlin, Germany', availableTimeSlots: ['09:00-12:00', '14:00-17:00'], isFavorite: false, isAdded: false, emoji: '🧱' },
-  { id: '52', name: 'Beer Garden', location: 'Berlin, Germany', availableTimeSlots: ['16:00-19:00', '18:00-21:00'], isFavorite: false, isAdded: false, emoji: '🍺' },
-  { id: '53', name: 'Museum Island', location: 'Berlin, Germany', availableTimeSlots: ['10:00-13:00', '13:00-16:00'], isFavorite: false, isAdded: false, emoji: '🏛️' },
-  { id: '54', name: 'Street Art Tour', location: 'Berlin, Germany', availableTimeSlots: ['11:00-14:00', '15:00-18:00'], isFavorite: false, isAdded: false, emoji: '🎨' },
-  { id: '55', name: 'Currywurst Tasting', location: 'Berlin, Germany', availableTimeSlots: ['12:00-14:00', '18:00-20:00'], isFavorite: false, isAdded: false, emoji: '🌭' },
+  { id: '51', name: 'Berlin Wall Tour', location: 'Berlin, Germany', availableTimeSlots: ['09:00-12:00', '14:00-17:00'], isFavorite: false, isAdded: false, emoji: '🧱', language: 'German', duration: [3, 3] },
+  { id: '52', name: 'Beer Garden', location: 'Berlin, Germany', availableTimeSlots: ['16:00-19:00', '18:00-21:00'], isFavorite: false, isAdded: false, emoji: '🍺', language: 'English', duration: [3, 3] },
+  { id: '53', name: 'Museum Island', location: 'Berlin, Germany', availableTimeSlots: ['10:00-13:00', '13:00-16:00'], isFavorite: false, isAdded: false, emoji: '🏛️', language: 'German', duration: [3, 3] },
+  { id: '54', name: 'Street Art Tour', location: 'Berlin, Germany', availableTimeSlots: ['11:00-14:00', '15:00-18:00'], isFavorite: false, isAdded: false, emoji: '🎨', language: 'English', duration: [3, 3] },
+  { id: '55', name: 'Currywurst Tasting', location: 'Berlin, Germany', availableTimeSlots: ['12:00-14:00', '18:00-20:00'], isFavorite: false, isAdded: false, emoji: '🌭', language: 'German', duration: [2, 2] },
   
   // Singapore, Singapore
-  { id: '56', name: 'Gardens by the Bay', location: 'Singapore, Singapore', availableTimeSlots: ['09:00-12:00', '18:00-21:00'], isFavorite: false, isAdded: false, emoji: '🌳' },
-  { id: '57', name: 'Hawker Food Tour', location: 'Singapore, Singapore', availableTimeSlots: ['11:00-14:00', '18:00-21:00'], isFavorite: false, isAdded: false, emoji: '🍜' },
-  { id: '58', name: 'Marina Bay Sands', location: 'Singapore, Singapore', availableTimeSlots: ['10:00-13:00', '16:00-19:00'], isFavorite: false, isAdded: false, emoji: '🏙️' },
-  { id: '59', name: 'Sentosa Island', location: 'Singapore, Singapore', availableTimeSlots: ['09:00-14:00', '13:00-18:00'], isFavorite: false, isAdded: false, emoji: '🏝️' },
-  { id: '60', name: 'Night Safari', location: 'Singapore, Singapore', availableTimeSlots: ['19:00-22:00', '20:00-23:00'], isFavorite: false, isAdded: false, emoji: '🦁' },
+  { id: '56', name: 'Gardens by the Bay', location: 'Singapore, Singapore', availableTimeSlots: ['09:00-12:00', '18:00-21:00'], isFavorite: false, isAdded: false, emoji: '🌳', language: 'English', duration: [3, 3] },
+  { id: '57', name: 'Hawker Food Tour', location: 'Singapore, Singapore', availableTimeSlots: ['11:00-14:00', '18:00-21:00'], isFavorite: false, isAdded: false, emoji: '🍜', language: 'Mandarin', duration: [3, 3] },
+  { id: '58', name: 'Marina Bay Sands', location: 'Singapore, Singapore', availableTimeSlots: ['10:00-13:00', '16:00-19:00'], isFavorite: false, isAdded: false, emoji: '🏙️', language: 'English', duration: [3, 3] },
+  { id: '59', name: 'Sentosa Island', location: 'Singapore, Singapore', availableTimeSlots: ['09:00-14:00', '13:00-18:00'], isFavorite: false, isAdded: false, emoji: '🏝️', language: 'Malay', duration: [5, 5] },
+  { id: '60', name: 'Night Safari', location: 'Singapore, Singapore', availableTimeSlots: ['19:00-22:00', '20:00-23:00'], isFavorite: false, isAdded: false, emoji: '🦁', language: 'English', duration: [3, 3] },
 ];
 
