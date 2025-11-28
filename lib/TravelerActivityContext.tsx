@@ -44,16 +44,20 @@ export const TravelerActivityProvider: React.FC<{ children: React.ReactNode }> =
               return null;
             }
             
-            return {
+            const activity: TravelerActivity = {
               // Start with original activity data (ensures all fields are correct)
               ...originalActivity,
               // Preserve user-specific state from localStorage
               isFavorite: storedActivity.isFavorite ?? originalActivity.isFavorite,
               isAdded: storedActivity.isAdded ?? originalActivity.isAdded,
-              startTime: storedActivity.startTime,
-              endTime: storedActivity.endTime,
-              date: storedActivity.date,
             };
+            
+            // Only set optional schedule fields if they exist
+            if (storedActivity.startTime) activity.startTime = storedActivity.startTime;
+            if (storedActivity.endTime) activity.endTime = storedActivity.endTime;
+            if (storedActivity.date) activity.date = storedActivity.date;
+            
+            return activity;
           }).filter((act): act is TravelerActivity => act !== null);
           
           // Also include any new activities that weren't in localStorage
