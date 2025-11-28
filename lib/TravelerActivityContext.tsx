@@ -22,7 +22,18 @@ export const TravelerActivityProvider: React.FC<{ children: React.ReactNode }> =
     const stored = localStorage.getItem('locaylo_traveler_activities');
     if (stored) {
       try {
-        setActivities(JSON.parse(stored));
+        const parsed = JSON.parse(stored);
+        // Validate and ensure all activities have required array properties
+        const validatedActivities = Array.isArray(parsed) 
+          ? parsed.map((activity: Partial<TravelerActivity>) => ({
+              ...activity,
+              // Ensure duration is always an array
+              duration: Array.isArray(activity.duration) ? activity.duration : [],
+              // Ensure availableTimeSlots is always an array
+              availableTimeSlots: Array.isArray(activity.availableTimeSlots) ? activity.availableTimeSlots : [],
+            })) as TravelerActivity[]
+          : TRAVELER_ACTIVITIES;
+        setActivities(validatedActivities);
       } catch (e) {
         console.error('Failed to parse traveler activities from localStorage', e);
       }

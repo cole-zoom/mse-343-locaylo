@@ -93,8 +93,13 @@ export default function TravelerHomePage() {
     location.name.toLowerCase().includes(locationSearch.toLowerCase())
   );
 
-  const checkDurationMatch = (activityDurations: number[], selectedDurationIds: string[]): boolean => {
+  const checkDurationMatch = (activityDurations: number[] | undefined, selectedDurationIds: string[]): boolean => {
     if (selectedDurationIds.length === 0) return true;
+    
+    // Defensive check: if duration is undefined or not an array, don't match any duration filter
+    if (!activityDurations || !Array.isArray(activityDurations) || activityDurations.length === 0) {
+      return false;
+    }
 
     const durationRanges = selectedDurationIds.map(id => {
       switch (id) {
