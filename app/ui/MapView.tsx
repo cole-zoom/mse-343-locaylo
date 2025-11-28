@@ -438,7 +438,7 @@ export function MapView({ selectedLocation, activities, onToggleFavorite, onInte
               color: 'var(--text-primary)'
             }}
           >
-            I'm interested
+            I&apos;m interested
           </button>
         </div>
       )}
