@@ -24,19 +24,46 @@ export const TravelerActivityProvider: React.FC<{ children: React.ReactNode }> =
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
-        // Validate and ensure all activities have required array properties
-        const validatedActivities = Array.isArray(parsed) 
-          ? parsed.map((activity: Partial<TravelerActivity>) => ({
-              ...activity,
-              // Ensure duration is always an array
-              duration: Array.isArray(activity.duration) ? activity.duration : [],
-              // Ensure availableTimeSlots is always an array
-              availableTimeSlots: Array.isArray(activity.availableTimeSlots) ? activity.availableTimeSlots : [],
-            })) as TravelerActivity[]
-          : TRAVELER_ACTIVITIES;
-        setActivities(validatedActivities);
+        if (Array.isArray(parsed)) {
+          // Create a lookup map of original activities for fallback values
+          const originalActivityMap = new Map(
+            TRAVELER_ACTIVITIES.map(act => [act.id, act])
+          );
+          
+          // Merge stored data with original data to ensure all required fields are valid
+          const validatedActivities = parsed.map((storedActivity: Partial<TravelerActivity>) => {
+            const originalActivity = originalActivityMap.get(storedActivity.id);
+            
+            // If activity doesn't exist in original data, skip it (could be old/removed activity)
+            if (!originalActivity) {
+              return null;
+            }
+            
+            return {
+              // Start with original activity data (ensures all fields are correct)
+              ...originalActivity,
+              // Preserve user-specific state from localStorage
+              isFavorite: storedActivity.isFavorite ?? originalActivity.isFavorite,
+              isAdded: storedActivity.isAdded ?? originalActivity.isAdded,
+              startTime: storedActivity.startTime,
+              endTime: storedActivity.endTime,
+              date: storedActivity.date,
+            };
+          }).filter((act): act is TravelerActivity => act !== null);
+          
+          // Also include any new activities that weren't in localStorage
+          const storedIds = new Set(parsed.map((a: Partial<TravelerActivity>) => a.id));
+          const newActivities = TRAVELER_ACTIVITIES.filter(act => !storedIds.has(act.id));
+          
+          setActivities([...validatedActivities, ...newActivities]);
+        } else {
+          // Invalid data format, reset to defaults
+          setActivities(TRAVELER_ACTIVITIES);
+        }
       } catch (e) {
         console.error('Failed to parse traveler activities from localStorage', e);
+        // On parse error, reset to defaults
+        setActivities(TRAVELER_ACTIVITIES);
       }
     }
     setIsLoaded(true);
