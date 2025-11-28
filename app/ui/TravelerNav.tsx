@@ -3,6 +3,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { Search, MessageSquare, User, Calendar } from 'lucide-react';
+import { useTravelerActivities } from '@/lib/TravelerActivityContext';
 
 interface TravelerNavProps {
   current: 'search' | 'activities' | 'chat' | 'profile';
@@ -10,6 +11,7 @@ interface TravelerNavProps {
 
 export const TravelerNav: React.FC<TravelerNavProps> = ({ current }) => {
   const router = useRouter();
+  const { chatNotificationCount } = useTravelerActivities();
 
   return (
     <div 
@@ -38,11 +40,24 @@ export const TravelerNav: React.FC<TravelerNavProps> = ({ current }) => {
       
       <button 
         onClick={() => router.push('/traveler-chat')}
-        className={`flex flex-col items-center gap-1.5 transition-colors ${
+        className={`flex flex-col items-center gap-1.5 transition-colors relative ${
           current === 'chat' ? 'text-black' : 'text-gray-400'
         }`}
       >
-        <MessageSquare size={28} strokeWidth={2} />
+        <div className="relative">
+          <MessageSquare size={28} strokeWidth={2} />
+          {chatNotificationCount > 0 && (
+            <div 
+              className="absolute -top-2 -right-2 min-w-[20px] h-[20px] rounded-full flex items-center justify-center text-white text-xs font-bold px-1"
+              style={{ 
+                backgroundColor: 'var(--notification-red)',
+                boxShadow: 'var(--notification-shadow)'
+              }}
+            >
+              {chatNotificationCount}
+            </div>
+          )}
+        </div>
         <span className="text-xs font-medium">chat</span>
       </button>
 

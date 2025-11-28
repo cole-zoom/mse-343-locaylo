@@ -10,6 +10,8 @@ interface TravelerActivityContextType {
   addToSchedule: (activityId: string, timeSlot: string, date: string) => void;
   removeFromSchedule: (activityId: string) => void;
   getActivity: (activityId: string) => TravelerActivity | undefined;
+  chatNotificationCount: number;
+  clearChatNotifications: () => void;
 }
 
 const TravelerActivityContext = createContext<TravelerActivityContextType | undefined>(undefined);
@@ -17,6 +19,7 @@ const TravelerActivityContext = createContext<TravelerActivityContextType | unde
 export const TravelerActivityProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [activities, setActivities] = useState<TravelerActivity[]>(TRAVELER_ACTIVITIES);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [chatNotificationCount, setChatNotificationCount] = useState(0);
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -75,6 +78,20 @@ export const TravelerActivityProvider: React.FC<{ children: React.ReactNode }> =
         setActivities(TRAVELER_ACTIVITIES);
       }
     }
+    
+    // Load chat notification count
+    const notificationCount = localStorage.getItem('locaylo_chat_notifications');
+    if (notificationCount) {
+      try {
+        const count = parseInt(notificationCount, 10);
+        if (!isNaN(count)) {
+          setChatNotificationCount(count);
+        }
+      } catch (e) {
+        console.error('Failed to parse notification count', e);
+      }
+    }
+    
     setIsLoaded(true);
   }, []);
 
@@ -100,6 +117,18 @@ export const TravelerActivityProvider: React.FC<{ children: React.ReactNode }> =
         ? { ...activity, isAdded: true, startTime, endTime, date }
         : activity
     ));
+    
+    // Increment chat notification count
+    setChatNotificationCount(prev => {
+      const newCount = prev + 1;
+      localStorage.setItem('locaylo_chat_notifications', newCount.toString());
+      return newCount;
+    });
+  };
+  
+  const clearChatNotifications = () => {
+    setChatNotificationCount(0);
+    localStorage.setItem('locaylo_chat_notifications', '0');
   };
 
   const removeFromSchedule = (activityId: string) => {
@@ -121,7 +150,9 @@ export const TravelerActivityProvider: React.FC<{ children: React.ReactNode }> =
         toggleFavorite,
         addToSchedule,
         removeFromSchedule,
-        getActivity
+        getActivity,
+        chatNotificationCount,
+        clearChatNotifications
       }}
     >
       {children}

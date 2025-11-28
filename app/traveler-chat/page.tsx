@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { TravelerNav } from '../ui/TravelerNav';
+import { useTravelerActivities } from '@/lib/TravelerActivityContext';
 
 interface ChatPreview {
   id: string;
@@ -59,8 +60,14 @@ const mockChats: ChatPreview[] = [
 
 export default function TravelerChatPage() {
   const router = useRouter();
+  const { clearChatNotifications } = useTravelerActivities();
   const [activeChatsExpanded, setActiveChatsExpanded] = useState(true);
   const [pastChatsExpanded, setPastChatsExpanded] = useState(true);
+
+  // Clear chat notifications when visiting the chat page
+  useEffect(() => {
+    clearChatNotifications();
+  }, [clearChatNotifications]);
 
   const activeChats = mockChats.filter(chat => chat.status === 'active');
   const pastChats = mockChats.filter(chat => chat.status === 'past');
