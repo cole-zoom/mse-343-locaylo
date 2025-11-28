@@ -323,7 +323,7 @@ export default function TravelerActivitiesPage() {
           onClose={() => setSelectedActivity(null)}
           onInterested={handleInterested}
           onToggleFavorite={handleToggleFavorite}
-          onShowNotification={() => setShowSuccessNotification(true)}
+          onShowFavoriteNotification={() => setShowSuccessNotification(true)}
         />
       )}
 

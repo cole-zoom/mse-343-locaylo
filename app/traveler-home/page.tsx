@@ -490,7 +490,7 @@ export default function TravelerHomePage() {
             onToggleFavorite={handleToggleFavorite}
             onInterested={(activityId, timeSlot) => {
               handleInterested(activityId, timeSlot);
-              setNotificationMessage('Activity added');
+              setNotificationMessage('Added to activities');
               setShowSuccessNotification(true);
             }}
             onLocationSelect={(locationName) => {
@@ -509,7 +509,11 @@ export default function TravelerHomePage() {
           onClose={() => setSelectedActivity(null)}
           onInterested={handleInterested}
           onToggleFavorite={handleToggleFavorite}
-          onShowNotification={() => {
+          onShowInterestedNotification={() => {
+            setNotificationMessage('Added to activities');
+            setShowSuccessNotification(true);
+          }}
+          onShowFavoriteNotification={() => {
             setNotificationMessage('Added to favourites');
             setShowSuccessNotification(true);
           }}

@@ -9,7 +9,8 @@ interface ActivityDetailsModalProps {
   onClose: () => void;
   onInterested: (activityId: string, timeSlot: string) => void;
   onToggleFavorite: (activityId: string) => void;
-  onShowNotification?: () => void;
+  onShowInterestedNotification?: () => void;
+  onShowFavoriteNotification?: () => void;
 }
 
 export function ActivityDetailsModal({ 
@@ -17,7 +18,8 @@ export function ActivityDetailsModal({
   onClose, 
   onInterested,
   onToggleFavorite,
-  onShowNotification
+  onShowInterestedNotification,
+  onShowFavoriteNotification
 }: ActivityDetailsModalProps) {
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string | null>(null);
   const [isFavorite, setIsFavorite] = useState(activity.isFavorite);
@@ -25,8 +27,8 @@ export function ActivityDetailsModal({
   const handleInterested = () => {
     if (selectedTimeSlot) {
       onInterested(activity.id, selectedTimeSlot);
-      if (onShowNotification) {
-        onShowNotification();
+      if (onShowInterestedNotification) {
+        onShowInterestedNotification();
       }
       onClose();
     }
@@ -34,8 +36,8 @@ export function ActivityDetailsModal({
 
   const handleToggleFavorite = () => {
     // Show notification when adding to favorites (not removing)
-    if (!isFavorite && onShowNotification) {
-      onShowNotification();
+    if (!isFavorite && onShowFavoriteNotification) {
+      onShowFavoriteNotification();
     }
     setIsFavorite(!isFavorite);
     onToggleFavorite(activity.id);
