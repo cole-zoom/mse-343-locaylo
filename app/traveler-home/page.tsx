@@ -122,21 +122,24 @@ export default function TravelerHomePage() {
     );
   };
 
-  const filteredActivities = activities.filter(activity => {
-    const matchesLocation = !selectedLocation || activity.location === selectedLocation;
-    const matchesSearch = !searchQuery || 
-      activity.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesLanguage = selectedLanguages.length === 0 || 
-      selectedLanguages.includes(activity.language);
-    const matchesDuration = checkDurationMatch(activity.duration, selectedDurations);
-    return matchesLocation && matchesSearch && matchesLanguage && matchesDuration;
-  });
+  const filteredActivities = React.useMemo(() => {
+    return activities.filter(activity => {
+      const matchesLocation = !selectedLocation || activity.location === selectedLocation;
+      const matchesSearch = !searchQuery || 
+        activity.name.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesLanguage = selectedLanguages.length === 0 || 
+        selectedLanguages.includes(activity.language);
+      const matchesDuration = checkDurationMatch(activity.duration, selectedDurations);
+      return matchesLocation && matchesSearch && matchesLanguage && matchesDuration;
+    });
+  }, [activities, selectedLocation, searchQuery, selectedLanguages, selectedDurations]);
 
   // Randomize order when no location or filters are selected
   const displayActivities = React.useMemo(() => {
     const shouldRandomize = !selectedLocation && 
                            selectedLanguages.length === 0 && 
-                           selectedDurations.length === 0;
+                           selectedDurations.length === 0 &&
+                           !searchQuery;
     
     if (shouldRandomize) {
       // Fisher-Yates shuffle algorithm
@@ -149,7 +152,7 @@ export default function TravelerHomePage() {
     }
     
     return filteredActivities;
-  }, [filteredActivities, selectedLocation, selectedLanguages, selectedDurations]);
+  }, [filteredActivities, selectedLocation, selectedLanguages, selectedDurations, searchQuery]);
 
   const handleLocationSelect = (locationName: string) => {
     if (locationName === 'All') {
